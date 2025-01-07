@@ -226,8 +226,8 @@ if (defined('JETPACK__VERSION')) {
 }
 
 require get_template_directory() . '/inc/helpers.php';
-// require get_template_directory() . '/inc/walkers/primary-menu.php';
-// require get_template_directory() . '/inc/walkers/mobile-menu.php';
-// require get_template_directory() . '/inc/walkers/footer-menu.php';
-// require get_template_directory() . '/inc/ajax/forms.php';
-// require get_template_directory() . '/inc/ajax/loadmore.php';
+require get_template_directory() . '/inc/walkers/primary-menu.php';
+require get_template_directory() . '/inc/walkers/mobile-menu.php';
+require get_template_directory() . '/inc/walkers/footer-menu.php';
+require get_template_directory() . '/inc/ajax/forms.php';
+require get_template_directory() . '/inc/ajax/loadmore.php';
