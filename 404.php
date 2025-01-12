@@ -1,4 +1,5 @@
 <?php
+
 /**
  * The template for displaying 404 pages (not found)
  *
@@ -10,51 +11,23 @@
 get_header();
 ?>
 
-	<main id="primary" class="site-main">
+<main id="primary" class="site-main">
+	<!-- not found -->
+	<div class="not-found" id="not-found">
+		<div class="container">
+			<div class="not-found__wrap">
+				<span class="not-found__heading"><?php the_field('404_heading', 'option') ?></span>
+				<p class="not-found__description"><?php the_field('404_description', 'option') ?></p>
+				<a href="<?= esc_url(get_field('404_link', 'option')['url']) ?>" target="<?= esc_attr(get_field('404_link', 'option')['target']) ?>" class="not-found__btn btn"><?= esc_html(get_field('404_link', 'option')['title']) ?></a>
+			</div>
+			<picture class="not-found__bg">
+				<img src="<?= esc_url(get_field('404_bg_image', 'option')['url']) ?>" alt="<?= esc_attr(get_field('404_bg_image', 'option')['alt']) ?>">
+			</picture>
+		</div>
+	</div>
+	<!-- end of not found -->
 
-		<section class="error-404 not-found">
-			<header class="page-header">
-				<h1 class="page-title"><?php esc_html_e( 'Oops! That page can&rsquo;t be found.', 'basic-starter' ); ?></h1>
-			</header><!-- .page-header -->
-
-			<div class="page-content">
-				<p><?php esc_html_e( 'It looks like nothing was found at this location. Maybe try one of the links below or a search?', 'basic-starter' ); ?></p>
-
-					<?php
-					get_search_form();
-
-					the_widget( 'WP_Widget_Recent_Posts' );
-					?>
-
-					<div class="widget widget_categories">
-						<h2 class="widget-title"><?php esc_html_e( 'Most Used Categories', 'basic-starter' ); ?></h2>
-						<ul>
-							<?php
-							wp_list_categories(
-								array(
-									'orderby'    => 'count',
-									'order'      => 'DESC',
-									'show_count' => 1,
-									'title_li'   => '',
-									'number'     => 10,
-								)
-							);
-							?>
-						</ul>
-					</div><!-- .widget -->
-
-					<?php
-					/* translators: %1$s: smiley */
-					$basic_starter_archive_content = '<p>' . sprintf( esc_html__( 'Try looking in the monthly archives. %1$s', 'basic-starter' ), convert_smilies( ':)' ) ) . '</p>';
-					the_widget( 'WP_Widget_Archives', 'dropdown=1', "after_title=</h2>$basic_starter_archive_content" );
-
-					the_widget( 'WP_Widget_Tag_Cloud' );
-					?>
-
-			</div><!-- .page-content -->
-		</section><!-- .error-404 -->
-
-	</main><!-- #main -->
+</main><!-- #main -->
 
 <?php
 get_footer();
