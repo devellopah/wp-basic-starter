@@ -1,0 +1,13 @@
+{
+  "post_types": {
+    "page": {},
+    "post": {},
+    "product": {}
+  },
+  "taxonomies": {
+    "category": {},
+    "post_tag": {},
+    "brand": {}
+  },
+  "admin_pages": []
+}
