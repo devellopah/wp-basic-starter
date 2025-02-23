@@ -10,6 +10,9 @@
  * @package Basic_Starter
  */
 
+// global $wp;
+// $currentPageUrl = home_url($wp->request);
+// $language = str_contains($currentPageUrl, site_url('/en')) ? 'ru' : 'en';
 ?>
 <!doctype html>
 <html <?php language_attributes(); ?>>
@@ -49,6 +52,10 @@
 					?>
 
 						<a href="tel:<?php mw_tel_sanitized(get_field('header_tel_1', 'option')) ?>" class="header__link"><?= esc_html(get_field('header_tel_1', 'option')) ?></a>
+
+						<!-- <a href="<?= esc_url(wpm_translate_url($currentPageUrl, $language)) ?>" class="header__language">
+							<?= strtoupper($language) ?>
+						</a> -->
 
 						<button class="hamburger" id="hamburger-toggle" aria-label="Меню">
 							<span class="hamburger__inner"></span>
