@@ -9,6 +9,7 @@
  *
  * @package Basic_Starter
  */
+$options = get_fields('options');
 ?>
 
 </div>
@@ -20,19 +21,25 @@
 			<div class="footer__main">
 				<div class="c-socnav footer__socnav">
 					<ul class="c-socnav__list">
-						<?php foreach (get_field('socials', 'option') as $item) : ?>
-							<li class="c-socnav__item">
-								<a href="<?= esc_url($item['url']) ?>" title="<?= esc_attr($item['title']) ?>" target="_blank" class="c-socnav__link">
-									<?php if ($item['icon']) : ?>
-										<img class="c-socnav__icon" src="<?= esc_url($item['icon']['url']) ?>" alt="<?= esc_attr($item['icon']['alt']) ?>">
-									<?php endif; ?>
-								</a>
-							</li>
-						<?php endforeach ?>
+						<?php if (!empty($options['socials'])) :
+							foreach ($options['socials'] as $item) : ?>
+								<li class="c-socnav__item">
+									<a href="<?= esc_url($item['url']) ?>" title="<?= esc_attr($item['title']) ?>" target="_blank" class="c-socnav__link">
+										<?php if ($item['icon']) : ?>
+											<img class="c-socnav__icon" src="<?= esc_url($item['icon']['url']) ?>" alt="<?= esc_attr($item['icon']['alt']) ?>">
+										<?php else: ?>
+											<span><?= esc_html($item['title']) ?></span>
+										<?php endif; ?>
+									</a>
+								</li>
+						<?php endforeach;
+						endif; ?>
 					</ul>
 				</div>
-				<a href="index.html" class="footer__logotype">
-					<img src="<?= esc_url(get_field('footer_logo_desc_1', 'option')['url']) ?>" alt="<?= esc_attr(get_field('footer_logo_desc_1', 'option')['alt']) ?>" width="154" height="96">
+				<a href="<?= home_url() ?>" class="footer__logotype">
+					<?php if (!empty($options['footer_logo_desc_1'])) : ?>
+						<img src="<?= esc_url($options['footer_logo_desc_1']['url']) ?>" alt="<?= esc_attr($options['footer_logo_desc_1']['alt']) ?>" width="154" height="96">
+					<?php endif ?>
 				</a>
 				<?php
 				wp_nav_menu(
@@ -50,28 +57,40 @@
 				?>
 				<div class="footer-contacts footer__contacts">
 					<ul class="footer-contacts__list">
-						<li class="footer-contacts__item">
-							<a href="tel:<?php mw_tel_sanitized(get_field('footer_tel_1', 'option')) ?>" class="footer-contacts__link"><?= esc_html(get_field('footer_tel_1', 'option')) ?></a>
-						</li>
+						<?php if (!empty($options['footer_tel_1'])) : ?>
+							<li class="footer-contacts__item">
+								<a href="tel:<?php mw_tel_sanitized($options['footer_tel_1']) ?>" class="footer-contacts__link"><?= esc_html($options['footer_tel_1']) ?></a>
+							</li>
+						<?php endif ?>
 						<li class="footer-contacts__item">
 							<a href="mailto:<?php bloginfo('admin_email') ?>" class="footer-contacts__link"><?php bloginfo('admin_email') ?></a>
 						</li>
-						<li class="footer-contacts__item">
-							<address class="footer-contacts__link"><?= esc_html(get_field('city', 'option')) ?> <?= esc_html(get_field('street', 'option')) ?> <?= esc_html(get_field('building', 'option')) ?></address>
-						</li>
+						<?php if (!empty($options['city'])) : ?>
+							<li class="footer-contacts__item">
+								<address class="footer-contacts__link"><?= esc_html($options['city']) ?> <?= esc_html(get_field('street', 'option')) ?> <?= esc_html(get_field('building', 'option')) ?></address>
+							</li>
+						<?php endif ?>
 					</ul>
 				</div>
-				<div class="c-subscribe footer__subscribe">
-					<span class="c-subscribe__title"><?php the_field('newsletter_heading', 'option') ?></span>
-					<?= do_shortcode('[wp_email_capture_form]'); ?>
-				</div>
+				<?php if (function_exists('wp_email_capture_form')) : ?>
+					<div class="c-subscribe footer__subscribe">
+						<span class="c-subscribe__title"><?php the_field('newsletter_heading', 'option') ?></span>
+						<?= do_shortcode('[wp_email_capture_form]'); ?>
+					</div>
 			</div>
-			<div class="footer__bottom">
+		<?php endif; ?>
+		<div class="footer__bottom">
+			<?php if (!empty($options['footer_copyright'])) : ?>
 				<p class="footer__copyright"><?php the_field('footer_copyright', 'option') ?></p>
+			<?php endif ?>
+			<?php if (!empty($options['footer_agency']) && $options['footer_agency']['link']) : ?>
 				<a href="<?= esc_url(get_field('footer_agency', 'option')['link']) ?>" class="footer__dev" target="_blank">
-					<img src="<?= esc_url(get_field('footer_agency', 'option')['image']['url']) ?>" alt="<?= esc_attr(get_field('footer_agency', 'option')['image']['alt']) ?>">
+					<?php if ($options['footer_agency']['image']) : ?>
+						<img src="<?= esc_url(get_field('footer_agency', 'option')['image']['url']) ?>" alt="<?= esc_attr(get_field('footer_agency', 'option')['image']['alt']) ?>">
+					<?php endif ?>
 				</a>
-			</div>
+			<?php endif ?>
+		</div>
 		</div>
 	</footer>
 	<!-- end of footer -->
@@ -95,54 +114,60 @@
 			)
 		);
 		?>
-		<a href="tel:<?php mw_tel_sanitized(get_field('footer_tel_1', 'option')) ?>" class="menu__link"><?= esc_html(get_field('footer_tel_1', 'option')) ?></a>
+		<a href="tel:<?php mw_tel_sanitized($options['footer_tel_1']) ?>" class="menu__link"><?= esc_html($options['footer_tel_1']) ?></a>
 	</div>
 </div>
 <!-- end of menu -->
 
-<!-- modals -->
-<div class="modal" id="modal-application">
-	<div class="modal__wrap">
-		<button class="modal__close-btn modal__close" aria-label="Закрыть">
-			<svg>
-				<use xlink:href="<?= THEME_URI ?>/assets/img/sprite.svg#icon-close"></use>
-			</svg>
-		</button>
-		<div class="application modal__application js-form-wrapper">
-			<div class="application__wrap">
-				<?= get_template_part('components/form', null, ['namespace' => 'application']) ?>
+<?php if (!empty($options['form_consent'])) : ?>
+	<div class="modal" id="modal-application">
+		<div class="modal__wrap">
+			<button class="modal__close-btn modal__close" aria-label="Закрыть">
+				<svg>
+					<use xlink:href="<?= THEME_URI ?>/assets/img/sprite.svg#icon-close"></use>
+				</svg>
+			</button>
+			<div class="application modal__application js-form-wrapper">
+				<div class="application__wrap">
+					<?= get_template_part('components/form', null, ['namespace' => 'application']) ?>
+				</div>
 			</div>
 		</div>
 	</div>
-</div>
-<!-- end of modals -->
+<?php endif ?>
 
 <!-- popups -->
-<div class="popup js-popup" id="popup-application-success">
-	<div class="popup__wrap">
-		<div class="popup__wrapper">
-			<picture class="popup__icon">
-				<img src="<?= esc_url(get_field('submit_success', 'option')['image']['url']) ?>" alt="<?= esc_attr(get_field('submit_success', 'option')['image']['alt']) ?>">
-			</picture>
-			<span class="popup__title"><?= esc_html(get_field('submit_success', 'option')['heading']) ?></span>
-			<span class="popup__description"><?= wp_kses_post(get_field('submit_success', 'option')['description']) ?></span>
-			<button class="popup__btn btn js-popup-closer"><?= esc_html(get_field('submit_success', 'option')['btn_text']) ?></button>
+<?php if (!empty($options['submit_success'])) : ?>
+	<div class="popup js-popup" id="popup-application-success">
+		<div class="popup__wrap">
+			<div class="popup__wrapper">
+				<picture class="popup__icon">
+					<img src="<?= esc_url(get_field('submit_success', 'option')['image']['url']) ?>" alt="<?= esc_attr(get_field('submit_success', 'option')['image']['alt']) ?>">
+				</picture>
+				<span class="popup__title"><?= esc_html(get_field('submit_success', 'option')['heading']) ?></span>
+				<span class="popup__description"><?= wp_kses_post(get_field('submit_success', 'option')['description']) ?></span>
+				<button class="popup__btn btn js-popup-closer"><?= esc_html(get_field('submit_success', 'option')['btn_text']) ?></button>
+			</div>
 		</div>
 	</div>
-</div>
-<div class="popup js-popup" id="popup-application-fail">
-	<div class="popup__wrap">
-		<div class="popup__wrapper">
-			<picture class="popup__icon">
-				<img src="<?= esc_url(get_field('submit_fail', 'option')['image']['url']) ?>" alt="<?= esc_attr(get_field('submit_fail', 'option')['image']['alt']) ?>">
+<?php endif ?>
 
-			</picture>
-			<span class="popup__title"><?= esc_html(get_field('submit_fail', 'option')['heading']) ?></span>
-			<span class="popup__description"><?= wp_kses_post(get_field('submit_fail', 'option')['description']) ?></span>
-			<button class="popup__btn btn js-popup-closer"><?= esc_html(get_field('submit_fail', 'option')['btn_text']) ?></button>
+
+<?php if (!empty($options['submit_fail'])) : ?>
+	<div class="popup js-popup" id="popup-application-fail">
+		<div class="popup__wrap">
+			<div class="popup__wrapper">
+				<picture class="popup__icon">
+					<img src="<?= esc_url(get_field('submit_fail', 'option')['image']['url']) ?>" alt="<?= esc_attr(get_field('submit_fail', 'option')['image']['alt']) ?>">
+				</picture>
+				<span class="popup__title"><?= esc_html(get_field('submit_fail', 'option')['heading']) ?></span>
+				<span class="popup__description"><?= wp_kses_post(get_field('submit_fail', 'option')['description']) ?></span>
+				<button class="popup__btn btn js-popup-closer"><?= esc_html(get_field('submit_fail', 'option')['btn_text']) ?></button>
+			</div>
 		</div>
 	</div>
-</div>
+<?php endif ?>
+
 <!-- end of popups -->
 
 <?php if (function_exists('wp_email_capture_form')) : ?>

@@ -9,10 +9,7 @@
  *
  * @package Basic_Starter
  */
-
-// global $wp;
-// $currentPageUrl = home_url($wp->request);
-// $language = str_contains($currentPageUrl, site_url('/en')) ? 'ru' : 'en';
+$options = get_fields('options');
 ?>
 <!doctype html>
 <html <?php language_attributes(); ?>>
@@ -33,9 +30,11 @@
 		<header id="header" class="header">
 			<div class="container">
 				<div class="header__wrapper">
-					<a href="<?= home_url() ?>" class="header__logotype">
-						<img class="default" src="<?= esc_url(get_field('header_logo_desc_1', 'option')['url']) ?>" alt="<?= esc_attr(get_field('header_logo_desc_1', 'option')['alt']) ?>" width="100" height="62">
-					</a>
+					<?php if (!empty($options['header_logo_desc_1'])) : ?>
+						<a href="<?= home_url() ?>" class="header__logotype">
+							<img class="default" src="<?= esc_url($options['header_logo_desc_1']['url']) ?>" alt="<?= esc_attr($options['header_logo_desc_1']['alt']) ?>" width="100" height="62">
+						</a>
+					<?php endif ?>
 					<?php
 					if (!is_404()) :
 						wp_nav_menu(
@@ -51,11 +50,15 @@
 						);
 					?>
 
-						<a href="tel:<?php mw_tel_sanitized(get_field('header_tel_1', 'option')) ?>" class="header__link"><?= esc_html(get_field('header_tel_1', 'option')) ?></a>
+						<?php if (!empty($options['header_tel_1'])) : ?>
+							<a href="tel:<?php mw_tel_sanitized($options['header_tel_1']) ?>" class="header__link"><?= esc_html($options['header_tel_1']) ?></a>
+						<?php endif ?>
 
-						<!-- <a href="<?= esc_url(wpm_translate_url($currentPageUrl, $language)) ?>" class="header__language">
-							<?= strtoupper($language) ?>
-						</a> -->
+						<?php if (function_exists('wpm_translate_url')) : ?>
+							<a href="<?= esc_url(wpm_translate_url(mw_get_current_url(), mw_get_next_lang())) ?>" class="header__language">
+								<?= strtoupper(mw_get_next_lang()) ?>
+							</a>
+						<?php endif ?>
 
 						<button class="hamburger" id="hamburger-toggle" aria-label="Меню">
 							<span class="hamburger__inner"></span>
