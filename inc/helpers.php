@@ -3,6 +3,16 @@ define('THEME_URI', get_template_directory_uri());
 
 // Enable custom fields in functions.php
 // add_filter('acf/settings/remove_wp_meta_box', '__return_false');
+// add_filter('show_admin_bar', '__return_false');
+// add_filter('acf/load_field/name=location', 'acf_load_locations_field_choices');
+// add_filter('acf/load_field/name=duration', 'acf_load_durations_field_choices');
+// add_filter('acf/load_field/name=complexity', 'acf_load_complexities_field_choices');
+
+// add_action('admin_head', 'mw_hide_description_field');
+// add_action('admin_notices', 'id_WPSE_114111');
+
+// add_action('admin_menu', 'remove_themes_menu_submenu_page', 999);
+
 
 function mw_get_current_url()
 {
@@ -32,8 +42,6 @@ function mw_tel_sanitized($tel)
   echo preg_replace('/[(,), ,-]/', '', esc_html($tel));
 }
 
-add_filter('show_admin_bar', '__return_false');
-
 function mw_hide_description_field()
 {
   $screen = get_current_screen();
@@ -46,7 +54,6 @@ function mw_hide_description_field()
         </style>';
   }
 }
-add_action('admin_head', 'mw_hide_description_field');
 
 function mw_get_front_page_id()
 {
@@ -57,13 +64,12 @@ function mw_get_front_page_id()
   return (int) \get_option('page_on_front');
 }
 
-// function id_WPSE_114111()
-// {
-//   echo "<pre>";
-//   var_dump(get_current_screen());
-//   echo "</pre>";
-// }
-// add_action('admin_notices', 'id_WPSE_114111');
+function id_WPSE_114111()
+{
+  echo "<pre>";
+  var_dump(get_current_screen());
+  echo "</pre>";
+}
 
 function acf_load_locations_field_choices($field)
 {
@@ -95,7 +101,6 @@ function acf_load_locations_field_choices($field)
   return $field;
 }
 
-add_filter('acf/load_field/name=location', 'acf_load_locations_field_choices');
 
 function acf_load_durations_field_choices($field)
 {
@@ -127,7 +132,6 @@ function acf_load_durations_field_choices($field)
   return $field;
 }
 
-add_filter('acf/load_field/name=duration', 'acf_load_durations_field_choices');
 
 function acf_load_complexities_field_choices($field)
 {
@@ -158,7 +162,6 @@ function acf_load_complexities_field_choices($field)
   return $field;
 }
 
-add_filter('acf/load_field/name=complexity', 'acf_load_complexities_field_choices');
 
 function mw_the_tour_dates($post = false)
 {
@@ -230,16 +233,19 @@ function mw_prepare_durations($array)
   return $outputArray;
 }
 
-add_action('admin_menu', function () {
+function remove_themes_menu_submenu_page()
+{
   global $current_user;
   $current_user = wp_get_current_user();
   $user_name = $current_user->user_login;
-
-  //check condition for the user means show menu for this user
-  if (is_admin() &&  $user_name != 'USERNAME') {
-    //We need this because the submenu's link (key from the array too) will always be generated with the current SERVER_URI in mind.
-    $customizer_url = add_query_arg('return', urlencode(remove_query_arg(wp_removable_query_args(), wp_unslash($_SERVER['REQUEST_URI']))), 'customize.php');
-    mw_log($customizer_url);
+  $customizer_url = add_query_arg('return', urlencode(remove_query_arg(wp_removable_query_args(), wp_unslash($_SERVER['REQUEST_URI']))), 'customize.php');
+  // Check condition for the user (show menu for everyone except this user)
+  if (is_admin() && $user_name != 'USERNAME') {
     remove_submenu_page('themes.php', $customizer_url);
+    remove_submenu_page('themes.php', 'widgets.php');
   }
-}, 999);
+  // If you also want to prevent direct access via URL
+  if ($current_user->user_login !== 'USERNAME' && strpos($_SERVER['REQUEST_URI'], 'customize.php') !== false) {
+    wp_die(__('You do not have permission to access the Customizer.'));
+  }
+}
