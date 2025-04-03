@@ -20,9 +20,11 @@ get_header();
 				<p class="not-found__description"><?php the_field('404_description', 'option') ?></p>
 				<a href="<?= esc_url(get_field('404_link', 'option')['url']) ?>" target="<?= esc_attr(get_field('404_link', 'option')['target']) ?>" class="not-found__btn btn"><?= esc_html(get_field('404_link', 'option')['title']) ?></a>
 			</div>
-			<picture class="not-found__bg">
-				<img src="<?= esc_url(get_field('404_bg_image', 'option')['url']) ?>" alt="<?= esc_attr(get_field('404_bg_image', 'option')['alt']) ?>">
-			</picture>
+			<?php if (get_field('404_bg_image', 'option')) : ?>
+				<picture class="not-found__bg">
+					<img src="<?= esc_url(get_field('404_bg_image', 'option')['url']) ?>" alt="<?= esc_attr(get_field('404_bg_image', 'option')['alt']) ?>">
+				</picture>
+			<?php endif ?>
 		</div>
 	</div>
 	<!-- end of not found -->
